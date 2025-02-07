@@ -7,8 +7,8 @@ if (!$id) {
     header('Location: /');
 }
 
-// Importar base de datos
-require 'includes/templates/config/database.php';
+require 'includes/app.php';
+
 $db = conectarDB();
 
 // Consultar
@@ -22,7 +22,7 @@ $propiedad = mysqli_fetch_assoc($resultado);
 
 
 <?php
-    require 'includes/funciones.php';
+
     incluirTemplate('header');
 ?>
 
