@@ -35,7 +35,7 @@ $propiedad = mysqli_fetch_assoc($resultado);
             <p class="precio">$ <?php echo $propiedad['precio']; ?></p>
             <ul class="iconos-caracteristicas">
                 <li>
-                    <img class="icono" loading="lazy" src="build/img/icono_wc.svg" alt="icono wc">
+                    <img class="icono" loading="lazy" src="build/img/icono_WC.svg" alt="icono WC">
                     <p><?php echo $propiedad['WC']; ?></p>
                 </li>
                 <li>

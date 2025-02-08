@@ -24,7 +24,7 @@ $resultado = mysqli_query($db, $query);
 
             <ul class="iconos-caracteristicas">
                 <li>
-                    <img class="icono" loading="lazy" src="build/img/icono_wc.svg" alt="icono wc">
+                    <img class="icono" loading="lazy" src="build/img/icono_WC.svg" alt="icono WC">
                     <p><?php echo $propiedad['WC']; ?></p>
                 </li>
                 <li>
