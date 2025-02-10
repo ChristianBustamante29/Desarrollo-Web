@@ -2,15 +2,11 @@
 
 namespace App;
 
-class Propiedad {
+class Propiedad extends ActiveRecord {
 
-    // Base de datos
-    protected static $db;
+    protected static $tabla = 'propiedades';
     protected static $columnasDB = ['id', 'titulo', 'precio', 'imagen', 'descripcion', 'habitaciones', 'WC', 'estacionamiento', 'creado', 'vendedorId'];
-    
-    // Errores
-    protected static $errores = [];
-    
+
     public $id;
     public $titulo;
     public $precio;
@@ -22,14 +18,9 @@ class Propiedad {
     public $creado;
     public $vendedorId;
 
-     // Definir la conexion a la bd
-    public static function setDB($database) {
-        self::$db = $database;
-    }
-
     public function __construct($args = [])
     {
-        $this->id = $args['id'] ?? '';
+        $this->id = $args['id'] ?? null;
         $this->titulo = $args['titulo'] ?? '';
         $this->precio = $args['precio'] ?? '';
         $this->imagen = $args['imagen'] ?? '';
@@ -38,49 +29,9 @@ class Propiedad {
         $this->WC = $args['WC'] ?? '';
         $this->estacionamiento = $args['estacionamiento'] ?? '';
         $this->creado = date('Y/m/d');
-        $this->vendedorId = $args['vendedorId'] ?? 1;
+        $this->vendedorId = $args['vendedorId'] ?? '';
     }
 
-    public function guardar(){
-
-        // Sanitizar los datos
-        $atributos = $this->sanitizarDatos();
-
-
-         // Insertar en la base de datos
-        $query = " INSERT INTO propiedades ( ";
-        $query .= join(', ', array_keys($atributos));
-        $query .= " ) VALUES (' ";  
-        $query .= join("', '", array_values($atributos));
-        $query .= " ') ";
-        $resultado = self::$db->query($query);
-        return $resultado;
-    }
-
-    // Identificar y unir los atriburos de la bd
-    public function atributos(){
-        $atributos = [];
-        foreach(self::$columnasDB as $columna) {
-            if($columna === 'id') continue;
-            $atributos[$columna] = $this->$columna;
-        }
-        return $atributos;
-    }
-
-    public function sanitizarDatos(){
-        $atributos = $this->atributos();
-        $sanitizado = [];
-        foreach($atributos as $key => $value){
-            $sanitizado[$key] = self::$db->escape_string($value);
-        }
-        return $sanitizado;
-    }
-
-    // Validacion
-    public static function getErrores(){
-        return self::$errores;
-    }
-    
     public function validar(){
 
         if (!$this->titulo) {
@@ -112,73 +63,9 @@ class Propiedad {
         }
 
         if(!$this->imagen) {
-            self::$errores[] = "La imagen es obligatoria";
+            self::$errores[] = "La imagen de la propiedad es obligatoria";
         }
 
         return self::$errores;
     }
-
-    public function setImagen($imagen) {
-        if($imagen) {
-            $this->imagen = $imagen;
-        }
-    }
-
-    // Lista todos los registros
-    public static function all() {
-        $query = "SELECT * FROM propiedades";
-
-        $resultado = self::consultarSQL($query);
-
-        return $resultado;
-    }
-
-    // Busca un registro por su id
-    public static function find($id) {
-        $query = "SELECT * FROM propiedades WHERE id = ${id}";
-
-        $resultado = self::consultarSQL($query);
-
-        return array_shift($resultado);
-    }
-
-    public static function consultarSQL($query) {
-        // Consultar la base de datos
-        $resultado = self::$db->query($query);
-
-        // Iterar los resultados
-        $array = [];
-        while($registro = $resultado->fetch_assoc()){
-            $array[] = self::crearObjeto($registro);
-        }
-
-
-        // Liberar la memoria
-        $resultado->free();
-
-        // Retornar los resultados
-        return $array;
-    }
-
-    protected static function crearObjeto($registro) {
-        $objeto = new self;
-
-
-        foreach($registro as $key => $value){
-            if( property_exists( $objeto, $key ) ){
-                $objeto->$key = $value;
-            }
-        }
-        return $objeto;
-    }
-
-    // Sincroniza el objeto en memoria con los cambios realizados por el usuario
-    public function sincronizar( $args = [] ){
-        foreach($args as $key => $value) {
-            if(property_exists($this, $key ) && !is_null($value)) {
-                $this->$key = $value;
-            }
-        }
-    }
-
 }

@@ -1,19 +1,18 @@
 <?php
     require '../../includes/app.php';
     use App\Propiedad;
+    use App\Vendedor;
     use Intervention\Image\Drivers\Gd\Driver;
     use Intervention\Image\ImageManager;
 
     estaAutenticado();
 
-    // Base de datos
-    $db = conectarDB();
 
+    // Crear el obieto
     $propiedad = new Propiedad;
 
-    //  Consultar para obtener los vendedores
-    $consulta = "SELECT * FROM vendedores";
-    $resultado = mysqli_query($db, $consulta);
+    // Consulta para obtener todos los vendedores
+    $vendedores = vendedor::all();
 
     // Arreglo con mensajes de errores
     $errores = Propiedad::getErrores();
@@ -25,13 +24,15 @@
 
         // Generar un nombre unico
         $nombreImagen = md5( uniqid( rand(), true ) ) . ".jpg";
+
+        // Setear la imagen
         if($_FILES['propiedad']['tmp_name']['imagen']){
             $manager = new ImageManager(Driver::class);
             $imagen = $manager->read($_FILES['propiedad']['tmp_name']['imagen'])->cover(800, 600);
             $propiedad->setImagen($nombreImagen);
         }
 
-        $errores =$propiedad->validar();
+        $errores = $propiedad->validar();
 
         if(empty($errores)) {
 
@@ -43,13 +44,8 @@
             //  Guarda la imagen en el servidor
             $imagen->save(CARPETA_IMAGENES . $nombreImagen);
 
-            $resultado = $propiedad->guardar();
-            if ($resultado) {
-                // Redireccionar usuario
-                header("Location: /admin?resultado=1");
-            }
+            $propiedad->guardar();
         }
-
     }
 
 
