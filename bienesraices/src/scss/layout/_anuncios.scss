@@ -1,14 +1,19 @@
 @use 'sass:color';
 
+
 @include tablet {
     .contenedor-anuncios {
         @include grid(3, 2rem);
+        grid-template-columns: repeat($columnas, minmax(0, 1fr));
+    }
+    img{
+        max-width: 100%;
+        height: auto;
     }
 }
 
 .anuncio {
     background-color: color.adjust($gris, $lightness: 5%);
-    // border: 1px solid darken($gris, 10);
     border: 1px solid color.adjust($gris, $lightness: -10%);
     margin-bottom: 2rem;
 

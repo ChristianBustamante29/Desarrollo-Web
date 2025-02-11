@@ -87,7 +87,7 @@ class ActiveRecord {
     // Identificar y unir los atriburos de la bd
     public function atributos(){
         $atributos = [];
-        foreach(self::$columnasDB as $columna) {
+        foreach(static::$columnasDB as $columna) {
             if($columna === 'id') continue;
             $atributos[$columna] = $this->$columna;
         }
@@ -142,6 +142,15 @@ class ActiveRecord {
         return $resultado;
     }
 
+    // Obtiene determinado numero de registros
+    public static function get($cantidad) {
+        $query = "SELECT * FROM " . static::$tabla . " LIMIT " . $cantidad;
+
+        $resultado = self::consultarSQL($query);
+
+        return $resultado;
+    }
+
     // Busca un registro por su id
     public static function find($id) {
         $query = "SELECT * FROM " . static::$tabla . " WHERE id = ${id}";
@@ -158,7 +167,7 @@ class ActiveRecord {
         // Iterar los resultados
         $array = [];
         while($registro = $resultado->fetch_assoc()){
-            $array[] = self::crearObjeto($registro);
+            $array[] = static::crearObjeto($registro);
         }
 
 
