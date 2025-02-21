@@ -51,8 +51,6 @@
             $propiedad->setImagen($nombreImagen);
         }
 
-
-
         if (empty($errores)) {
             if($_FILES['propiedad']['tmp_name']['imagen']){
                 // Almacenar la imagen

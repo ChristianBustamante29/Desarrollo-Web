@@ -19,11 +19,8 @@
         $id = filter_var($id, FILTER_VALIDATE_INT);
 
         if($id) {
-
             $tipo = $_POST['tipo'];
-
             if(validarTipoContenido($tipo)) {
-
                 // Compara lo que vamos a eliminar
                 if($tipo === 'vendedor') {
                     $vendedor = Vendedor::find($id);
